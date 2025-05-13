@@ -11,21 +11,28 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
+# SECURITY WARNING: don't run with debug turned on in production!
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+env = environ.Env(DEBUG=(bool,False))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-(chw9ncn=ik*l=@5x6d487bpf^gk+5_jc-jr$sakdewwqa3lnf'
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env('SECRET_KEY')
+
+ALLOWED_HOSTS = env('ALLOWED_HOSTS',cast=list)
+
+CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS',cast=list)
 
 
 # Application definition
@@ -76,11 +83,11 @@ WSGI_APPLICATION = 'DjangoCRM.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME' : 'djangoCRM',
-        'USER': 'root',
-        'PASSWORD':'12345678',
-        'HOST':'localhost',
-        'PORT':'3306',
+        'NAME' : env('dbName'),
+        'USER': env('dbUser'),
+        'PASSWORD':env('dbPass'),
+        'HOST':env('dbHost'),
+        'PORT':env('dbPort'),
     }
 }
 
